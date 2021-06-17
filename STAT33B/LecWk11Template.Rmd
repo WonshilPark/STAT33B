@@ -1,0 +1,77 @@
+---
+title: "STAT 33B Lec Workbook Wk 11"
+date: "Apr 3, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 7, 2021__ by 11:59pm PT.
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+File Formats
+=================
+
+## Exercise 1
+The `volerup.txt` file that contains the volcano data can be found in bcourses in the "data" directory. Download the file to your local computer and inspect it with a plain text editor to confirm the file format.
+
+Read the data set into R as a data frame. Use both `read.delim()` and `read.csv()` and `read.table()`  to read the data into R.
+Save each data frame into `vol.delim`, `vol.csv`, and `vol.table`, respecitvely.
+
+The data frames should have 36 columns and 835 rows/eruptions.
+You may need to provide arguments to the function calls, in addition to the location of the file. 
+
+_HINT: Consider the values for the 'header', 'sep', and 'quote' parameters in your function calls._
+
+
+```{r}
+vol.delim = read.delim("~/Downloads/volerup.txt")
+vol.csv = read.csv("~/Downloads/volerup.txt", sep = "\t")
+vol.table = read.table("~/Downloads/volerup.txt", header = TRUE, sep = "\t", quote = "\"")
+```
+
+Confirm that the three data frames have the same dimension, and that they columns are of the same class. Are these three data frames identical?
+ 
+
+```{r}
+# check dim
+dim(vol.delim)
+dim(vol.csv)
+dim(vol.table)
+
+# check names
+names(vol.delim)
+names(vol.csv)
+names(vol.table)
+
+# check if identical
+identical(vol.delim, vol.csv)
+identical(vol.delim, vol.table)
+```
+
+
+
+## Exercise 2
+
+Write the `vol.delim` data freme out as a CSV file called `vol2.csv`.
+use the function `write.csv()` to do this.
+
+
+
+```{r}
+write.csv(vol.delim, file = "~/Downloads/vol2.csv", row.names = FALSE)
+```
+
+Read the csv file that you created back into R and save it as `vol2.csv`.
+Use `identical()` to confirm that `vol2.csv` hasn't changed from `vol.delim`. If it has, investigate what changed, and fix your 
+call by specifying alternative values to some of the parameters.
+
+```{r}
+vol.csv2 = read.csv("~/Downloads/vol2.csv")
+
+identical(vol.csv2, vol.delim)
+dim(vol.csv2)
+names(vol.csv2)
+```
+

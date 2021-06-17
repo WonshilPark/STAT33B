@@ -1,0 +1,198 @@
+---
+title: "STAT 33A/B Lec Workbook Wk 13"
+date: "Apr 17, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 19, 2021__ by 11:59pm PT for STAT 33A and 
+__Apr 21, 2021__ by 11:59pm PT for STAT 33B.
+
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+## Exercise 1
+
+How many packages are in the Tidyverse? Explore the website to find out. You
+can count the tidymodels packages as a single package.
+
+**YOUR ANSWER GOES HERE:**
+There are 8 core packages in the tidyverse.
+In addition, there are another 12 or so packages for a total of about 20 packages. 
+
+
+## Exercise 2
+
+1. Read the documentation for the tibble package on the website. What's the
+   name of the function that creates a new tibble from column vectors?
+
+2. Create a tibble with 4 rows and 3 columns. You can make up the data in the
+   columns, but use a different data type for each one.
+
+3. Show how to convert the tibble from step 2 into an ordinary data frame.
+
+
+
+
+### Part 1
+The tibble() function is used to create a tibble from vectors. 
+Each vector should be the same length and will be used to create a column in the tibble.
+
+
+### Part 2
+
+
+
+```{r}
+library(tibble)
+
+tb = tibble(x = 1:4, y  = c(TRUE, TRUE, FALSE, TRUE), z = c("a", "bb", "ccc", "dddd"))
+
+class(tb)
+
+df = data.frame(x = 1:4, y  = c(TRUE, TRUE, FALSE, TRUE), z = c("a", "bb", "ccc", "dddd"))
+
+class(df)
+
+df
+tb
+```
+
+### Part 3
+
+```{r}
+tb2 = as.data.frame(tb)
+
+class(tb2)
+```
+
+
+
+
+## Exercise 3
+
+Use dplyr and the dogs data to compute each of the following subsets:
+
+1. Rows 10-30 only
+
+2. All rows except row 51
+
+3. All columns except `popularity_all` and `popularity`
+
+4. Rows 1-10 with only the `breed`, `weight`, and `height` columns
+
+
+You do not need to print out these subsets, just show us the code to compute
+them.
+
+
+```{r}
+load(url("http://www.stat.berkeley.edu/users/nolan/data/dogs.rda"))
+```
+
+
+
+
+### Part 1
+
+Here the results are hidden so that the solutions PDF doesn't have pages and
+pages of raw data printouts.
+
+```{r, results = "hide"}
+library(dplyr)
+
+tb1 = slice(dogs, 10:30)
+tb1
+
+df1 = dogs[10:30, ]
+df1
+```
+
+
+### Part 2
+
+```{r, results = "hide"}
+tb2 = slice(dogs, -51)
+
+df2 = dogs[-51, ]
+
+dim(tb2)
+
+tb2[50:52, 1:4]
+dogs[50:52, 1:4]
+df2[50:52, 1:4]
+```
+
+### Part 3
+
+```{r, results = "hide"}
+tb3 = select(dogs, -popularity_all, -popularity)
+
+tb3a = select(dogs, -"popularity_all", -"popularity")
+
+tb3b = select(dogs, -c(4,5))
+  
+df3 = dogs[ , !(names(dogs) %in% c("popularity_all", "popularity"))]
+
+df3a = dogs[ , -c(4, 5)]
+
+names(df3a)
+
+```
+
+### Part 4
+
+```{r}
+tb4 = slice(select(dogs, breed, height, weight), 1:10)
+tb4a = select(slice(dogs, 1:10), breed, height, weight)
+df4 = dogs[1:10, c("breed", "height", "weight")]
+
+df4
+```
+
+
+## Exercise 4
+
+Use dplyr to show that there are no duplicated rows in the dogs data.
+
+Explain your reasoning.
+
+```{r}
+dim(distinct(dogs))
+dim(dogs)
+dim(dogs) == dim(distinct(dogs))
+```
+
+
+## Exercise 5
+
+Use dplyr to determine for each `group` of dog, what's the shortest lifespan? 
+You should have one result per group here. 
+
+Additionally, for each `group` of dog, what's the longest lifespan?
+
+
+Here are the shortest lifespans for each group of dog:
+```{r}
+groups = group_by(dogs, group)
+summarize(groups, short.life = min(longevity, na.rm = TRUE))
+
+```
+
+Here are the longest lifespans for each group of dog:
+```{r}
+summarize(groups, long.life = max(longevity, na.rm = TRUE),
+          avg.wt = mean(weight, na.rm = TRUE), ct = n(), first.dog = first(breed))
+
+```
+
+An alternative approach to subsetting
+```{r}
+tb5 = filter(dogs, group == "toy")
+
+df4 = dogs[dogs$group == "toy", ]
+
+dim(tb5)
+dim(df4)
+```

@@ -1,0 +1,136 @@
+---
+title: "STAT 33A/B Lab Workbook Wk 13"
+date: "Apr 16, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 22, 2020__ by 9:00am or by midnight Apr 23 if you attend lab.
+
+* Knit and submit the generated PDF file on Gradescope.
+
+For each of the following exercises, use the dogs data.
+
+```{r}
+load(url("http://www.stat.berkeley.edu/users/nolan/data/dogs.rda"))
+```
+
+```{r}
+library(dplyr)
+```
+
+
+
+## Exercise 1
+
+For each of the following tasks, show the code to compute the result:
+
++ Using base R
++ Using dplyr
+
+
+1. The mean and median of the longevity column (ignoring missing values).
+
+2. The subset that contains rows 10-20 of the height, weight, and longevity
+   columns.
+
+3. The number of dog breeds with weight greater than 42.
+
+4. The subset of large dogs that require daily grooming.
+
+
+
+### Part 1
+
+```{r}
+# Base R
+mean(dogs$longevity, na.rm = TRUE)
+median(dogs$longevity, na.rm = TRUE)
+
+# dplyr
+summarize(dogs, mean(longevity, na.rm = TRUE))
+summarize(dogs, median(longevity, na.rm = TRUE))
+```
+
+### Part 2
+
+```{r}
+# Base R
+dogs[10:20, c("height", "weight", "longevity")]
+
+# dplyr
+select(slice(dogs, 10:20), height, weight, longevity)
+```
+
+### Part 3
+
+```{r}
+# Base R
+sum(dogs$weight > 42, na.rm = TRUE)
+
+# dplyr
+summarise(dogs, sum(weight > 42, na.rm = TRUE))
+count(dogs, weight > 42)
+```
+
+### Part 4
+
+```{r}
+# Base R
+dogs[dogs$size == "large" & dogs$grooming == "daily" & !is.na(dogs$grooming),]
+subset(dogs, size == "large" & grooming == "daily")
+
+# dplyr
+filter(dogs, size == "large" & grooming == "daily")
+
+```
+
+
+## Exercise 2
+
+Use dplyr and the dogs data to determine which 3 dogs cost the most.
+
+Your answer to this exercise should be a data frame with 3 rows.
+
+
+
+```{r}
+sorted = arrange(dogs, desc(price))
+slice(sorted, 1:3)
+
+```
+
+
+
+
+
+## Exercise 3
+
+Use dplyr to answer each of the following:
+
+1. On average, which `group` of dog has the highest lifetime cost? Which has
+   the lowest?
+
+2. How many dogs are there for each possible combination of `size` and
+   `grooming`?
+
+
+
+### Part 1
+
+```{r}
+groups = group_by(dogs, group)
+costs = summarize(groups, mean_cost = mean(lifetime_cost, na.rm = TRUE))
+arrange(costs, mean_cost)
+```
+
+You should find that herding dogs have the highest average lifetime cost. Working dogs have the lowest.
+
+### Part 2
+
+
+```{r}
+count(dogs, size, grooming)
+summarize(group_by(dogs, size, grooming), n = n())
+
+```

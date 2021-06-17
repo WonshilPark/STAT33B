@@ -1,0 +1,107 @@
+---
+title: "STAT 33B Lab Workbook Wk 9"
+date: "Mar 18, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Mar 18, 2021__ by 9:00am (or Mar 19 by midnight if you attend lab).
+
+Lab workbooks are graded for completeness, so as long as you make a clear effort to solve each problem, you'll get full credit. That said, make sure you understand
+the concepts here, because they're likely to reappear in homeworks, quizzes,
+and later lectures.
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+For-loops
+=========
+
+Watch the "For-loops" lecture video.
+
+No exercises for this section.
+
+
+
+Loop Indices
+============
+
+Watch the "Loop Indices" lecture video.
+
+No exercises for this section.
+
+
+
+While-loops
+===========
+
+Watch the "While-loops" lecture video.
+
+No exercises for this section.
+
+
+
+Preallocation
+=============
+
+Watch the "Preallocation" lecture video.
+
+No exercises for this section.
+
+
+Loops Example
+=============
+
+Watch the "Loops Example" lecture video.
+
+## Exercise 1
+
+Write a function that returns the first `n + 1` positions of a 3-dimensional
+discrete random walk. Return the `x`, `y`, and `z` coordinates in a data frame
+with columns `x`, `y`, and `z`. Your function should have a parameter `n` that
+controls the number of steps.
+
+_Hint: For efficiency, use vectors for `x`, `y`, and `z`. Wait to combine them into a data frame until the very last line of your function._
+
+**YOUR ANSWER GOES HERE:**
+```{r}
+r3walk = function(n) {
+  x = y = z = numeric(n + 1)
+  xyz = sample(1:3, n, replace = TRUE)
+  move = sample(c(-1, 1), n, replace = TRUE)
+  
+  for (i in seq_len(n)) {
+    x[i + 1] = x[i]
+    y[i + 1] = y[i]
+    z[i + 1] = z[i]
+    switch(xyz[i],
+           { # 1 x-axis
+             x[i + 1] = x[i] + move[i]
+             },
+           { # 2 x-axis
+             y[i + 1] = y[i] + move[i]
+             },
+           { # 3 x-axis
+             z[i + 1] = z[i] + move[i]
+             })
+  }
+  data.frame(x, y, z)
+}
+# r3walk(numeric(0))
+# r3walk(1:3)
+r3walk(0)
+r3walk(1)
+r3walk(2)
+# r3walk(1e6)
+```
+
+
+
+
+
+Developing Iterative Code
+=========================
+
+Watch the "Developing Iterative Code" lecture video.
+
+No exercises for this section. All done!

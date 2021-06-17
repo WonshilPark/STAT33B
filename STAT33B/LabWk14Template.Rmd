@@ -1,0 +1,82 @@
+---
+title: "STAT 33A/B Lab Workbook Wk 14"
+date: "Apr 29, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 29, 2021__ by 9:00am PT, or if you attend lab the workbook is due __Apr 30, 2021__ by 11:59pm.
+
+
+* Knit and submit the generated PDF file on Gradescope.
+
+This lab continues with the boat example.
+
+```{r}
+load(url("http://www.stat.berkeley.edu/users/nolan/data/toyboat.rda"))
+library(dplyr)
+library(tidyr)
+```
+
+There are four data frames: sailor1, sailor2, boat, reservations.
+They are small enough that you can examine them by printing the entire data frame. 
+
+
+
+## Exercise 1
+
+Create a data frame of the boats rented by sailors who have high ratings (over 8). There should be one record per boat. The final data frame should include only the boat id and the number of times it was rented by a sailor with a high rating. (There should be 3 records in the output.)
+
+```{r}
+sailors = union(sailor1, sailor2)
+bestRenters = filter(sailors, rating > 8)
+
+bestRenters = left_join(bestRenters, reservations, by = "sid")
+bestRenters = group_by(bestRenters, bid)
+bestRenters = summarize(bestRenters, n = n())
+
+bestRenters
+```
+
+
+
+## Exercise  2.
+
+Create a data frame that contains one record for each boat reservaton.
+In addition to the sailor id, boat id, and day of the reservation, the 
+data frame should contain the following information:
+
++ sailor name 
++ boat name
+
+
+```{r}
+reservations_with_sailors = right_join(select(sailors, sid, sname), reservations, by = "sid")
+
+boats.sailors = left_join(reservations_with_sailors, select(boat, bid, bname), by = "bid")
+
+boats.sailors
+```
+The resulting data frame should have 20 rows. 
+Four of these rows appear below:
+
+```{r, eval = FALSE}
+# sid   sname   bid day bname
+# 31	lubber	101	19	Interlake
+# 31	lubber	101	20	Interlake
+# 58	rusty	104	20	Marine
+# 58	rusty	102	21	Interlake
+```
+
+
+## Exercise 3. 
+
+Create a data frame with columns: boat id, boat name, and counts of the number of times each boat has been rented. (No need to worry about boats that were not rented).
+```{r}
+rentalCount = left_join(reservations, boat, by = "bid")
+rentalCount = group_by(rentalCount, bid)
+# first takes the first value from the vector
+rentalCount = summarize(rentalCount, bname = first(bname), n = n())
+
+rentalCount
+```

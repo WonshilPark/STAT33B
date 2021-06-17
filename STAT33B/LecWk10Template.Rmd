@@ -1,0 +1,56 @@
+---
+title: "STAT 33B Lecture Workbook Wk 10"
+date: "Mar 28, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Mar 31, 2021__ by 11:59pm PT.
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+
+Write a function that determines whether each element in a numeric vector is 
+even or odd.
+
+If all of the elements are even, `cat` the message `"All even"`. 
+
+If they are all odd then `cat` the message `"All odd"`. 
+
+Otherwise, `cat` the message, `"Mixed values, e.g. x is even and y is odd"` where `x` is an even value and `y` is an odd value of the input vector. 
+
+
+
+```{r}
+checkDivisibility = function(x) {
+  rems = x %% 2
+  z = sum(rems)
+  
+  if (z == 0) {
+    cat("All even.\n")
+  }
+  if (z == length(x)) {
+    cat("All odds.\n")
+  }
+  if (z > 0 & z < length(x)) {
+    cat("Mixed values, e.g.,", x[which(rems == 0)[1]], "is even and",
+        x[which(rems == 1)[1]], "is odd.\n")
+  }
+}
+
+```
+
+
+Test your function with the following inputs
+```{r}
+evens = seq(2, 10, by = 2)
+odds = seq(1, 7, by = 2)
+mixed = c(10, 12, 14, 17, 20)
+```
+
+```{r}
+checkDivisibility(odds)
+checkDivisibility(evens)
+checkDivisibility(mixed)
+```

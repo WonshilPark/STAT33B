@@ -1,0 +1,92 @@
+---
+title: "STAT 33A Lec Workbook Wk 14"
+date: "Apr 26, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 26, 2021__ by 11:59pm PT.
+
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+
+```{r}
+load(url("http://www.stat.berkeley.edu/users/nolan/data/toyboat.rda"))
+library(dplyr)
+library(tidyr)
+```
+
+There are four data frames: sailor1, sailor2, boat, reservations.
+They are small enough that you can examine them by printing the entire data frame. 
+
+
+
+## Exercise 1
+
+Combine the two sailor data frames (i.e., `sailor1` and `sailor2`) 
+into one data frame. Each sailor should appear only once.
+
+```{r}
+union(sailor1, sailor2)
+
+#full_join(sailor1, sailor2, by = "sid") NOT TO DO
+
+```
+
+
+## Exercise  2.
+
+Create a data frame that consists of the names of the sailors that are in `sailor1` and not in `sailor2`.
+
+```{r}
+setdiff(sailor1, sailor2)
+
+setdiff(sailor2, sailor1)
+
+```
+
+
+## Exercise 3. 
+
+Create a data frame of the reservations of boat 103 that includes the sailor's name and id, as well as the boat id and the day of the reservation. (You should find that only one particular sailor reserved this boat several times.)
+
+```{r}
+sailor_all = union(sailor1, sailor2)
+
+sailor_all_name = select(sailor_all, sid, sname)
+
+boat103R = filter(reservations, bid == 103)
+
+left_join(boat103R, sailor_all_name, by = "sid")
+
+s_a_n = select(union(sailor1, sailor2), sid, sname)
+left_join(filter(reservations, bid == 103), s_a_n, by = "sid")
+```
+
+
+## Exercise 4
+
+Create a data frame that contains the sailor name, boat name, and the number of times the sailor has rented the boat. That is, there should be one record for each sailor - boat combination. Don't worry about the cases where the sailor didn't rent a particular boat.  There should be 7 rows in the final data frame.
+
+```{r}
+sailor_all_name = select(sailor_all, sid, sname)
+boat_name = select(boat, bid, bname)
+
+fav_rentals = left_join(reservations, boat_name, by = "bid")
+fav_rentals = left_join(fav_rentals, sailor_all_name, by = "sid")
+head(fav_rentals)
+
+fav_rentals_grp = group_by(fav_rentals, bid, sid)
+
+summarize(fav_rentals_grp, ct = n(), boat = first(bname), sailor = last(sname))
+```
+
+Four of the rows are:
+```{r}
+# 101	22	2	Interlake	dustin
+# 101	28	2	Interlake	yuppy
+# 103	44	3	Clipper	  guppy
+# 104	58	2	Marine	  rusty
+```

@@ -1,0 +1,103 @@
+---
+title: "STAT 33B Lab Workbook Wk 10"
+date: "Mar 28, 2021"
+author: "Won Shil Park (3033452021)"
+output: pdf_document
+---
+
+This workbook is due __Apr 1, 2021__ by 9:00am PT or by midnight Apr 2 if you are attending lab.
+
+* Knit and submit the generated PDF file on Gradescope.
+
+
+
+## Exercise 1
+
+A vectorized implementation of the `to_kelvin` function is:
+```{r}
+to_kelvin = function(temperature, unit) {
+  unit = match.arg(unit, c("celsius", "fahrenheit"), several.ok = TRUE)
+
+  # First convert Fahrenheit to Celsius.
+  is_f = unit == "fahrenheit"
+  temperature[is_f] = (temperature[is_f] - 32) * 5 / 9
+
+  temperature + 273.15
+}
+```
+
+Write a modified version of `to_kelvin` that checks for potential problems. In
+particular, your version should check the assumptions that:
+
+* `temperature` is numeric.
+* `temperature` and `unit` are the same length, or `unit` has length 1.
+
+Your version should raise an error (with a descriptive message) if either of
+these assumptions don't hold.
+
+Test your function to show that it checks for potential problems. You can use
+`error = TRUE` on an RMarkdown code chunk to allow errors when knitting.
+
+**YOUR ANSWER GOES HERE:**
+
+```{r}
+to_kelvin = function(temperature, unit) {
+  if (!is.numeric(temperature)) {
+    stop("temperature needs to be numeric")
+  }
+  
+  if (length(temperature) != length(unit) && length(unit) != 1) {
+    stop("temperature and unit need to be same length or unit needs to be length 1")
+  }
+  
+  unit = match.arg(unit, c("celsius", "fahrenheit"), several.ok = TRUE)
+
+  # First convert Fahrenheit to Celsius.
+  is_f = unit == "fahrenheit"
+  temperature[is_f] = (temperature[is_f] - 32) * 5 / 9
+
+  temperature + 273.15
+}
+```
+
+
+Test your function with the following inputs:
+```{r, error = TRUE}
+to_kelvin(c(0, 32, 212, 100), c("c", "f", "f", "c"))
+
+to_kelvin(c(0, 100), "c")
+
+to_kelvin("hello", "c")
+
+to_kelvin(c(10, 20), c("c", "c", "f"))
+```
+
+
+
+
+## Exercise 2
+
+getwd()
+path.expand("~")
+Skim `?options` and `?Startup`.
+
+Create or edit your `.Rprofile` file to set an option (or several options).
+
+Check that your option is actually set when you restart R (you can call
+`options` without any arguments to see your current options).
+
+In your answer here, describe which option you set and include the code you
+added to `.Rprofile`.
+
+**YOUR ANSWER GOES HERE:**
+I used "options(prompt = ">>> ", continue = "... ")". Thus my regular "> " in my output turned into ">>> ".
+
+My code looked like this:
+
+> getwd()
+
+> file.edit(".Rprofile)
+
+In Rprofile tab I put in:
+
+> options(prompt = ">>> ", continue = "... ")
